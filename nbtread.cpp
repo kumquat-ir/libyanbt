@@ -34,7 +34,7 @@ int main(int argc, char** argv){
 	}
 	string ifname = argv[1];
 	streampos size;
-	char* filemem;
+	unique_ptr<char[]> filemem;
 	int fsize;
 	switch(checkgz(ifname)){
 		case -1: /* error */
@@ -43,7 +43,7 @@ int main(int argc, char** argv){
 		case 1: {/* gzip detected */
 			io::filtering_istream gzfile;
 			string nifname = filesystem::temp_directory_path() / "yanbt_tmp";
-			ofstream tmpfile ( filesystem::temp_directory_path() / "yanbt_tmp" );
+			ofstream tmpfile (nifname);
 			gzfile.push(io::gzip_decompressor());
 			cout << "decompressing gzip" << endl;
 			gzfile.push(io::file_source(ifname), ios::binary);
@@ -60,9 +60,9 @@ int main(int argc, char** argv){
 				return 1;
 			}
 			size = filein.tellg();
-			filemem = new char[size];
+			filemem.reset(new char[size]);
 			filein.seekg(ios::beg);
-			filein.read(filemem, size);
+			filein.read(filemem.get(), size);
 			filein.close();
 			fsize = size;
 			} // for scope
@@ -75,10 +75,9 @@ int main(int argc, char** argv){
 	cout << "size: " << fsize << endl;
 	cout << hex << setfill('0');
 	for(int i = 0; i < fsize; i++){
-		cout << setw(2) << static_cast<unsigned> (filemem[i]) << " ";
+		cout << setw(2) << static_cast<unsigned> (filemem[i] & 255) << " ";
 	}
 	cout << endl << dec;
 
-	delete[] filemem;
 	return 0;
 }
