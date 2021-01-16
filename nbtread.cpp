@@ -7,20 +7,7 @@
 #include <fstream>
 #include <filesystem>
 #include <endian.h>
-
-#define NBT_ID_END '\x00'
-#define NBT_ID_BYTE '\x01'
-#define NBT_ID_SHORT '\x02'
-#define NBT_ID_INT '\x03'
-#define NBT_ID_LONG '\x04'
-#define NBT_ID_FLOAT '\x05'
-#define NBT_ID_DOUBLE '\x06'
-#define NBT_ID_BYTE_ARR '\x07'
-#define NBT_ID_STRING '\x08'
-#define NBT_ID_LIST '\x09'
-#define NBT_ID_COMPOUND '\x0a'
-#define NBT_ID_INT_ARR '\x0b'
-#define NBT_ID_LONG_ARR '\x0c'
+#include "nbtparse.h"
 
 using namespace std;
 namespace io = boost::iostreams;
@@ -48,52 +35,6 @@ int checkgz(string ifname){
 		out = 1;
 	file.close();
 	return out;
-}
-
-int parse(ifstream &nbtfile){
-	nbtfile.seekg(ios::beg);
-
-	unique_ptr<char[]> buf;
-	unsigned short stringl;
-	vector<char> containers = {};
-
-	while(!nbtfile.eof()){
-		buf.reset(new char[1]);
-		nbtfile.read(buf.get(), 1);
-		switch(buf[0]){
-			case NBT_ID_COMPOUND:
-				cout << "Compound: ";
-				buf.reset(new char[2]);
-				nbtfile.read(buf.get(), 2);
-				stringl = htobe16(*reinterpret_cast<unsigned short*>(buf.get())); //this is probably the wrong way to do this
-				buf.reset(new char[stringl]);
-				nbtfile.read(buf.get(), stringl);
-				cout << buf << endl;
-				containers.insert(containers.begin(), NBT_ID_COMPOUND);
-				continue;
-			break;
-			case NBT_ID_STRING:
-				cout << "String: ";
-				buf.reset(new char[2]);
-				nbtfile.read(buf.get(), 2);
-				stringl = htobe16(*reinterpret_cast<unsigned short*>(buf.get()));
-				buf.reset(new char[stringl]);
-				nbtfile.read(buf.get(), stringl);
-				cout << buf << endl << "\t";
-				buf.reset(new char[2]);
-				nbtfile.read(buf.get(), 2);
-				stringl = htobe16(*reinterpret_cast<unsigned short*>(buf.get()));
-				buf.reset(new char[stringl]);
-				nbtfile.read(buf.get(), stringl);
-				cout << buf << endl;
-			break;
-			case NBT_ID_END:
-				cout << "End" << endl;
-			break;
-		}
-	}
-
-	return 0;
 }
 
 int main(int argc, char** argv){
