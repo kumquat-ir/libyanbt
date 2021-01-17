@@ -8,6 +8,12 @@
 
 using namespace std;
 
+/* im using these specific snippets a lot this just makes it so much easier 
+   dont use these outside of the parse() loop */
+#define readbuf( amt ) { buf.reset(new char[amt]); nbtfile.read(buf.get(), amt); }
+#define readbuf_ushort( res ) { buf.reset(new char[2]); nbtfile.read(buf.get(), 2); res = htobe16(*reinterpret_cast<unsigned short*>(buf.get())); }
+#define readbuf_str( res ) { readbuf_ushort( res ); if(res > 0) readbuf( res ); }
+
 int parse(ifstream &nbtfile){
 	nbtfile.seekg(ios::beg);
 
@@ -21,33 +27,62 @@ int parse(ifstream &nbtfile){
 		switch(buf[0]){
 			case NBT_ID_COMPOUND:
 				cout << "Compound: ";
-				buf.reset(new char[2]);
-				nbtfile.read(buf.get(), 2);
-				stringl = htobe16(*reinterpret_cast<unsigned short*>(buf.get())); //this is probably the wrong way to do this
+				readbuf_str(stringl);
 				cout << stringl << endl;
-				buf.reset(new char[stringl]);
-				nbtfile.read(buf.get(), stringl);
 				cout << buf << endl;
 				containers.push_back(NBT_ID_COMPOUND);
-				continue;
 			break;
 			case NBT_ID_STRING:
 				cout << "String: ";
-				buf.reset(new char[2]);
-				nbtfile.read(buf.get(), 2);
-				stringl = htobe16(*reinterpret_cast<unsigned short*>(buf.get()));
-				buf.reset(new char[stringl]);
-				nbtfile.read(buf.get(), stringl);
+				readbuf_str(stringl);
 				cout << buf << endl << "\t";
-				buf.reset(new char[2]);
-				nbtfile.read(buf.get(), 2);
-				stringl = htobe16(*reinterpret_cast<unsigned short*>(buf.get()));
-				buf.reset(new char[stringl]);
-				nbtfile.read(buf.get(), stringl);
+				readbuf_str(stringl);
 				cout << buf << endl;
 			break;
 			case NBT_ID_END:
 				cout << "End" << endl;
+			break;
+			case NBT_ID_BYTE:
+				cout << "Byte: ";
+				readbuf_str(stringl);
+				cout << buf << endl;
+				readbuf(1);
+				cout << static_cast<unsigned char>(buf[0]) << endl;
+			break;
+			case NBT_ID_INT:
+				cout << "Int: ";
+				readbuf_str(stringl);
+				cout << buf << endl;
+				readbuf(4);
+				cout << htobe32(*reinterpret_cast<int*>(buf.get())) << endl;
+			break;
+			case NBT_ID_LONG:
+				cout << "Long: ";
+				readbuf_str(stringl);
+				cout << buf << endl;
+				readbuf(8);
+				cout << htobe64(*reinterpret_cast<long*>(buf.get())) << endl;
+			break;
+			case NBT_ID_SHORT:
+				cout << "Short: ";
+				readbuf_str(stringl);
+				cout << buf << endl;
+				readbuf(2);
+				cout << htobe16(*reinterpret_cast<short*>(buf.get())) << endl;
+			break;
+			case NBT_ID_FLOAT:
+				cout << "Float: ";
+				readbuf_str(stringl);
+				cout << buf << endl;
+				readbuf(4);
+				cout << htobe32(*reinterpret_cast<float*>(buf.get())) << endl;
+			break;
+			case NBT_ID_DOUBLE:
+				cout << "Double: ";
+				readbuf_str(stringl);
+				cout << buf << endl;
+				readbuf(8);
+				cout << htobe64(*reinterpret_cast<double*>(buf.get())) << endl;
 			break;
 		}
 	}
