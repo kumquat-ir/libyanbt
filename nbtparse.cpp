@@ -12,7 +12,10 @@ using namespace std;
    dont use these outside of the parse() loop */
 #define readbuf( amt ) { buf.reset(new char[amt]); nbtfile.read(buf.get(), amt); }
 #define readbuf_ushort( res ) { buf.reset(new char[2]); nbtfile.read(buf.get(), 2); res = htobe16(*reinterpret_cast<unsigned short*>(buf.get())); }
-#define readbuf_str( res ) { readbuf_ushort( res ); if(res > 0) readbuf( res ); }
+#define readbuf_str( res ) { readbuf_ushort( res ); if(res > 0) {\
+	buf.reset(new char[res + 1]); nbtfile.read(buf.get(), res);\
+	buf[res] = '\x00';\
+} }
 
 int parse(ifstream &nbtfile){
 	nbtfile.seekg(ios::beg);
