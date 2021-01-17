@@ -34,10 +34,8 @@ int parse(ifstream &nbtfile){
 		cout << setprecision(17);
 		switch(buf[0]){
 			case NBT_ID_COMPOUND:
-				cout << "Compound: ";
 				readbuf_str(stringl);
-				cout << stringl << endl;
-				cout << buf << endl;
+				cout << nbttag(NBT_ID_COMPOUND, static_cast<string>(buf.get())) << endl;
 				containers.push_back(NBT_ID_COMPOUND);
 			break;
 			case NBT_ID_STRING:
