@@ -8,11 +8,12 @@
 #include <filesystem>
 #include <endian.h>
 #include "nbtparse.h"
+#include "nbtread.h"
 
 using namespace std;
 namespace io = boost::iostreams;
 
-void print_hex(unique_ptr<char[]> &toPrint, int amt, int start = 0){
+void print_hex(unique_ptr<char[]> &toPrint, int amt, int start){
 	cout << hex << setfill('0');
 	for(int i = start; i < amt; i++){
 		cout << setw(2) << static_cast<unsigned> (toPrint[i] & 255) << " ";
@@ -71,7 +72,7 @@ int main(int argc, char** argv){
 	filein.read(filemem.get(), fsize);
 	
 	cout << "size: " << fsize << endl;
-	print_hex(filemem, fsize);
+	print_hex(filemem, fsize, 0);
 
 	parse(filein);
 
