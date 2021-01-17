@@ -4,6 +4,7 @@
 #include <vector>
 #include <endian.h>
 #include "nbtparse.h"
+#include "nbttag.h"
 
 using namespace std;
 
