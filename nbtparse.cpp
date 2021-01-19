@@ -116,11 +116,41 @@ int parse(ifstream &nbtfilein){
 			case NBT_ID_DOUBLE:
 				cout << "Double: ";
 				readbuf_str(stringl);
-				parents.back	()->add_child(new nbttag(NBT_ID_DOUBLE, static_cast<string>(buf.get())));
+				parents.back()->add_child(new nbttag(NBT_ID_DOUBLE, static_cast<string>(buf.get())));
 				cout << buf << endl;
 				readbuf(8);
 				{unsigned long tempout = htobe64(*reinterpret_cast<unsigned long*>(buf.get()));
 				cout << *reinterpret_cast<double*>(&tempout) << endl;}
+			break;
+			case NBT_ID_BYTE_ARR:
+				cout << "Byte arr: ";
+				readbuf_str(stringl);
+				parents.back()->add_child(new nbttag(NBT_ID_BYTE_ARR, static_cast<string>(buf.get())));
+				cout << buf << endl;
+				readbuf(4);
+				{signed int tempout = htobe32(*reinterpret_cast<unsigned int*>(buf.get()));
+				cout << "Length: " << tempout << endl;
+				readbuf(tempout);}
+			break;
+			case NBT_ID_INT_ARR:
+				cout << "Int arr: ";
+				readbuf_str(stringl);
+				parents.back()->add_child(new nbttag(NBT_ID_INT_ARR, static_cast<string>(buf.get())));
+				cout << buf << endl;
+				readbuf(4);
+				{signed int tempout = htobe32(*reinterpret_cast<unsigned int*>(buf.get()));
+				cout << "Length: " << tempout << endl;
+				readbuf(tempout * 4);}
+			break;
+			case NBT_ID_LONG_ARR:
+				cout << "Long arr: ";
+				readbuf_str(stringl);
+				parents.back()->add_child(new nbttag(NBT_ID_LONG_ARR, static_cast<string>(buf.get())));
+				cout << buf << endl;
+				readbuf(4);
+				{signed int tempout = htobe32(*reinterpret_cast<unsigned int*>(buf.get()));
+				cout << "Length: " << tempout << endl;
+				readbuf(tempout * 8);}
 			break;
 		}
 	}
