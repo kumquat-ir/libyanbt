@@ -62,6 +62,7 @@ int parse(ifstream &nbtfilein){
 				cout << buf << endl << "\t";
 				parents.back()->add_child(new nbttag(NBT_ID_STRING, static_cast<string>(buf.get())));
 				readbuf_str(stringl);
+				parents.back()->get_last_child()->init_payload(static_cast<string>(buf.get()));
 				cout << buf << endl;
 			break;
 			case NBT_ID_END:

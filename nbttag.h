@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <memory>
+#include <variant>
 
 constexpr char NBT_ID_END = '\x00';
 constexpr char NBT_ID_BYTE = '\x01';
@@ -19,10 +21,15 @@ constexpr char NBT_ID_COMPOUND = '\x0a';
 constexpr char NBT_ID_INT_ARR = '\x0b';
 constexpr char NBT_ID_LONG_ARR = '\x0c';
 
+typedef std::variant<signed char, short, int, long, double, std::shared_ptr<signed char>,\
+		std::shared_ptr<int>, std::shared_ptr<long>, std::string> nbt_payload;
+
 class nbttag {
 protected:
 	std::vector<nbttag*> contents;
 public:
+	nbt_payload payload;
+	bool payload_exists = false;
 	char type;
 	bool named;
 	std::string name;
@@ -34,6 +41,11 @@ public:
 	void add_child(nbttag*);
 	nbttag* get_child(size_t);
 	nbttag* get_last_child();
+	template < class T >
+	void init_payload(T payloadi){
+		payload_exists = true;
+		payload = payloadi;
+	}
 	friend std::ostream& operator<<(std::ostream& os, nbttag it);
 };
 

@@ -84,6 +84,8 @@ ostream& operator<<(ostream& os, nbttag it){
 	os << "Tag type " << it.friendly_type();
 	if(it.named)
 		os << ", \"" << it.name << "\"";
+	if(it.payload_exists)
+		os << "\n" << *static_cast<string*>(get_if<string>(&it.payload));
 	if(it.contents.size() > 0){
 		os << "\nChildren: \n\t";
 		for (auto i : it.contents)
