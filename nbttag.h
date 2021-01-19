@@ -20,38 +20,21 @@ constexpr char NBT_ID_INT_ARR = '\x0b';
 constexpr char NBT_ID_LONG_ARR = '\x0c';
 
 class nbttag {
+protected:
+	std::vector<nbttag*> contents;
 public:
 	char type;
 	bool named;
 	std::string name;
+	int length;
+	nbttag();
 	nbttag(char);
 	nbttag(char, std::string);
 	std::string friendly_type();
+	void add_child(nbttag*);
+	nbttag* get_child(size_t);
+	nbttag* get_last_child();
 	friend std::ostream& operator<<(std::ostream& os, nbttag it);
-};
-
-class nbttag_parent : public nbttag {
-private:
-	std::vector<nbttag> contents;
-public:
-	int length;
-	nbttag_parent(char, int);
-	nbttag_parent(char, std::string, int);
-	void add_child(nbttag);
-};
-
-class nbttag_compound : public nbttag_parent {
-
-};
-
-class nbttag_list : public nbttag_parent {
-public:
-	char type_contains;
-};
-
-class nbttag_arr : public nbttag {
-public:
-	int length;
 };
 
 #endif /* NBTTAG_H */

@@ -2,12 +2,18 @@
 #define NBTFILE_H
 
 #include <string>
+#include <iostream>
 #include "nbttag.h"
 
 class nbtfile {
+private:
+	bool nbt_parent_init = false;
 public:
 	std::string filename;
-	nbttag_parent root_tag;
+	nbttag* root_tag;
+	nbtfile(std::string);
+	nbtfile(std::string, nbttag*);
+	friend std::ostream& operator<<(std::ostream& os, nbtfile it);
 };
 
 #endif /* NBTFILE_H */

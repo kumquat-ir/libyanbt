@@ -3,15 +3,23 @@
 
 using namespace std;
 
+nbttag::nbttag (){
+	type = NBT_ID_END;
+	named = false;
+	length = 0;
+}
+
 nbttag::nbttag (char typei){
 	type = typei;
 	named = false;
+	length = 0;
 }
 
 nbttag::nbttag (char typei, string namei){
 	type = typei;
 	named = true;
 	name = namei;
+	length = 0;
 }
 
 string nbttag::friendly_type(){
@@ -53,27 +61,33 @@ string nbttag::friendly_type(){
 			return "Short";
 		break;
 		case NBT_ID_STRING:
-			return "Short";
+			return "String";
 		break;
 	}
 	return "Invalid";
+}
+
+void nbttag::add_child(nbttag* child){
+	contents.push_back(child);
+	length++;
+}
+
+nbttag* nbttag::get_child(size_t pos){
+	return contents.at(pos);
+}
+
+nbttag* nbttag::get_last_child(){
+	return contents.back();
 }
 
 ostream& operator<<(ostream& os, nbttag it){
 	os << "Tag type " << it.friendly_type();
 	if(it.named)
 		os << ", \"" << it.name << "\"";
+	if(it.contents.size() > 0){
+		os << "\nChildren: \n\t";
+		for (auto i : it.contents)
+			os << *i << "\n\t";
+	}
 	return os;
-}
-
-nbttag_parent::nbttag_parent (char typei, int lengthi) : nbttag(typei) {
-	length = lengthi;
-}
-
-nbttag_parent::nbttag_parent (char typei, string namei, int lengthi) : nbttag(typei, namei) {
-	length = lengthi;
-}
-
-void nbttag_parent::add_child (nbttag child){
-	contents.push_back(child);
 }
