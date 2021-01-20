@@ -22,7 +22,7 @@ nbttag::nbttag (char typei, string namei){
 	length = 0;
 }
 
-string nbttag::friendly_type(){
+string nbttag::friendly_type() const {
 	switch(type){
 		case NBT_ID_BYTE:
 			return "Byte";
@@ -80,7 +80,7 @@ nbttag* nbttag::get_last_child(){
 	return contents.back();
 }
 
-string nbttag::payload_str(){
+string nbttag::payload_str() const {
 	if(!payload_exists)
 		return "No Payload";
 	switch(type){
@@ -88,6 +88,13 @@ string nbttag::payload_str(){
 			return to_string(*(get_if<signed char>(&payload)));
 		break;
 		case NBT_ID_BYTE_ARR:
+			{
+			string tmpstr = "";
+			for(auto i : *(get_if<vector<signed char>>(&payload))){
+				tmpstr += to_string(i) + " ";
+			}
+			return tmpstr;
+			}
 		break;
 		case NBT_ID_DOUBLE:
 			return to_string(*(get_if<double>(&payload)));
@@ -99,11 +106,25 @@ string nbttag::payload_str(){
 			return to_string(*(get_if<int>(&payload)));
 		break;
 		case NBT_ID_INT_ARR:
+			{
+			string tmpstr = "";
+			for(auto i : *(get_if<vector<signed int>>(&payload))){
+				tmpstr += to_string(i) + " ";
+			}
+			return tmpstr;
+			}
 		break;
 		case NBT_ID_LONG:
 			return to_string(*(get_if<long>(&payload)));
 		break;
 		case NBT_ID_LONG_ARR:
+			{
+			string tmpstr = "";
+			for(auto i : *(get_if<vector<signed long>>(&payload))){
+				tmpstr += to_string(i) + " ";
+			}
+			return tmpstr;
+			}
 		break;
 		case NBT_ID_SHORT:
 			return to_string(*(get_if<short>(&payload)));
@@ -115,7 +136,7 @@ string nbttag::payload_str(){
 	return "Invalid type";
 }
 
-ostream& operator<<(ostream& os, nbttag it){
+ostream& operator<<(ostream& os, const nbttag &it){
 	os << "Tag type " << it.friendly_type();
 	if(it.named)
 		os << ", \"" << it.name << "\"";

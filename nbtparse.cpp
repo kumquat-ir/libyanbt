@@ -140,7 +140,13 @@ int parse(ifstream &nbtfilein){
 				readbuf(4);
 				{signed int tempout = htobe32(*reinterpret_cast<unsigned int*>(buf.get()));
 				cout << "Length: " << tempout << endl;
-				readbuf(tempout);}
+				vector<signed char> tmpvec;
+				for(int i = 0; i < tempout; i++){
+					readbuf(1);
+					tmpvec.push_back(*reinterpret_cast<signed char*>(buf.get()));
+				}
+				parents.back()->get_last_child()->init_payload(tmpvec);
+				}
 			break;
 			case NBT_ID_INT_ARR:
 				cout << "Int arr: ";
@@ -150,7 +156,14 @@ int parse(ifstream &nbtfilein){
 				readbuf(4);
 				{signed int tempout = htobe32(*reinterpret_cast<unsigned int*>(buf.get()));
 				cout << "Length: " << tempout << endl;
-				readbuf(tempout * 4);}
+				vector<signed int> tmpvec;
+				for(int i = 0; i < tempout; i++){
+					readbuf(4);
+					unsigned int tempout2 = htobe32(*reinterpret_cast<unsigned int*>(buf.get()));
+					tmpvec.push_back(*reinterpret_cast<signed int*>(&tempout2));
+				}
+				parents.back()->get_last_child()->init_payload(tmpvec);
+				}
 			break;
 			case NBT_ID_LONG_ARR:
 				cout << "Long arr: ";
@@ -160,7 +173,14 @@ int parse(ifstream &nbtfilein){
 				readbuf(4);
 				{signed int tempout = htobe32(*reinterpret_cast<unsigned int*>(buf.get()));
 				cout << "Length: " << tempout << endl;
-				readbuf(tempout * 8);}
+				vector<signed long> tmpvec;
+				for(int i = 0; i < tempout; i++){
+					readbuf(8);
+					unsigned long tempout2 = htobe64(*reinterpret_cast<unsigned long*>(buf.get()));
+					tmpvec.push_back(*reinterpret_cast<signed long*>(&tempout2));
+				}
+				parents.back()->get_last_child()->init_payload(tmpvec);
+				}
 			break;
 		}
 	}
