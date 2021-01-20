@@ -72,7 +72,7 @@ int main(int argc, char** argv){
 	filein.read(filemem.get(), fsize);
 	
 	cout << "size: " << fsize << endl;
-	print_hex(filemem, fsize, 0);
+	//print_hex(filemem, fsize, 0);
 
 	parse(filein);
 

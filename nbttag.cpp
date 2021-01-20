@@ -100,11 +100,14 @@ ostream& operator<<(ostream& os, const nbttag &it){
 	if(it.named)
 		os << ", \"" << it.name << "\"";
 	if(it.payload_exists)
-		os << "\n" << it.payload_str();
+		os << " : " << it.payload_str();
 	if(it.contents.size() > 0){
-		os << "\nChildren: \n\t";
+		os << " {\n";
 		for (auto i : it.contents)
-			os << *i << "\n\t";
+			os << *i << "\n";
+		os << "}";
+		if(it.named)
+			os << " (" << it.name << ")";
 	}
 	return os;
 }

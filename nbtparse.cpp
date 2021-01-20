@@ -42,11 +42,10 @@ int parse(ifstream &nbtfilein){
 		break;
 		case NBT_ID_LIST:
 			//TODO, eventually
-			cout << "No support for root list tags yet" << endl;
+			cerr << "No support for root list tags yet" << endl;
 			return 1;
 		break;
 	}
-	cout << root_tag << endl;
 	parents.push_back(static_cast<unique_ptr<nbttag>>(&root_tag));
 
 	nbtfile nbtdata = nbtfile("default_filename", &root_tag);
@@ -65,12 +64,10 @@ int parse(ifstream &nbtfilein){
 			}
 
 			if(type == NBT_ID_END){
-				cout << "End" << endl;
 				if(parents.back()->type == NBT_ID_COMPOUND){
 					parents.back().release();
 					parents.pop_back();
 					in_list.pop_back();
-					cout << "popped!" << endl;
 				}
 				if(in_list.back() == true && list_vars.back().second <= 0){
 					parents.back().release();
@@ -107,50 +104,43 @@ int parse(ifstream &nbtfilein){
 			case NBT_ID_STRING:
 				readbuf_str(stringl);
 				parents.back()->get_last_child()->init_payload(static_cast<string>(buf.get()));
-				cout << buf << endl;
 			break;
 			case NBT_ID_END:
-				
+				cerr << "Unexpected TAG_END!" << endl;
+				return 1;
 			break;
 			case NBT_ID_BYTE:
 				readbuf(1);
 				parents.back()->get_last_child()->init_payload(*reinterpret_cast<signed char*>(buf.get()));
-				cout << to_string(*reinterpret_cast<signed char*>(buf.get())) << endl;
 			break;
 			case NBT_ID_INT:
 				readbuf(4);
 				{unsigned int tempout = htobe32(*reinterpret_cast<unsigned int*>(buf.get()));
-				parents.back()->get_last_child()->init_payload(*reinterpret_cast<int*>(&tempout));
-				cout << *reinterpret_cast<int*>(&tempout) << endl;}
+				parents.back()->get_last_child()->init_payload(*reinterpret_cast<int*>(&tempout));}
 			break;
 			case NBT_ID_LONG:
 				readbuf(8);
 				{unsigned long tempout = htobe64(*reinterpret_cast<unsigned long*>(buf.get()));
-				parents.back()->get_last_child()->init_payload(*reinterpret_cast<long*>(&tempout));
-				cout << *reinterpret_cast<long*>(&tempout) << endl;}
+				parents.back()->get_last_child()->init_payload(*reinterpret_cast<long*>(&tempout));}
 			break;
 			case NBT_ID_SHORT:
 				readbuf(2);
 				{unsigned short tempout = htobe16(*reinterpret_cast<unsigned short*>(buf.get()));
-				parents.back()->get_last_child()->init_payload(*reinterpret_cast<short*>(&tempout));
-				cout << *reinterpret_cast<short*>(&tempout) << endl;}
+				parents.back()->get_last_child()->init_payload(*reinterpret_cast<short*>(&tempout));}
 			break;
 			case NBT_ID_FLOAT:
 				readbuf(4);
 				{unsigned int tempout = htobe32(*reinterpret_cast<unsigned int*>(buf.get()));
-				parents.back()->get_last_child()->init_payload(*reinterpret_cast<float*>(&tempout));
-				cout << *reinterpret_cast<float*>(&tempout) << endl;}
+				parents.back()->get_last_child()->init_payload(*reinterpret_cast<float*>(&tempout));}
 			break;
 			case NBT_ID_DOUBLE:
 				readbuf(8);
 				{unsigned long tempout = htobe64(*reinterpret_cast<unsigned long*>(buf.get()));
-				parents.back()->get_last_child()->init_payload(*reinterpret_cast<double*>(&tempout));
-				cout << *reinterpret_cast<double*>(&tempout) << endl;}
+				parents.back()->get_last_child()->init_payload(*reinterpret_cast<double*>(&tempout));}
 			break;
 			case NBT_ID_BYTE_ARR:
 				readbuf(4);
 				{signed int tempout = htobe32(*reinterpret_cast<unsigned int*>(buf.get()));
-				cout << "Length: " << tempout << endl;
 				vector<signed char> tmpvec;
 				for(int i = 0; i < tempout; i++){
 					readbuf(1);
@@ -162,7 +152,6 @@ int parse(ifstream &nbtfilein){
 			case NBT_ID_INT_ARR:
 				readbuf(4);
 				{signed int tempout = htobe32(*reinterpret_cast<unsigned int*>(buf.get()));
-				cout << "Length: " << tempout << endl;
 				vector<signed int> tmpvec;
 				for(int i = 0; i < tempout; i++){
 					readbuf(4);
@@ -175,7 +164,6 @@ int parse(ifstream &nbtfilein){
 			case NBT_ID_LONG_ARR:
 				readbuf(4);
 				{signed int tempout = htobe32(*reinterpret_cast<unsigned int*>(buf.get()));
-				cout << "Length: " << tempout << endl;
 				vector<signed long> tmpvec;
 				for(int i = 0; i < tempout; i++){
 					readbuf(8);
