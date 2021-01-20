@@ -50,4 +50,6 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, const nbttag &it);
 };
 
+std::string nbt_friendly_type(char);
+
 #endif /* NBTTAG_H */

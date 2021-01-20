@@ -23,48 +23,7 @@ nbttag::nbttag (char typei, string namei){
 }
 
 string nbttag::friendly_type() const {
-	switch(type){
-		case NBT_ID_BYTE:
-			return "Byte";
-		break;
-		case NBT_ID_BYTE_ARR:
-			return "Byte Array";
-		break;
-		case NBT_ID_COMPOUND:
-			return "Compound";
-		break;
-		case NBT_ID_DOUBLE:
-			return "Double";
-		break;
-		case NBT_ID_END:
-			return "END";
-		break;
-		case NBT_ID_FLOAT:
-			return "Float";
-		break;
-		case NBT_ID_INT:
-			return "Int";
-		break;
-		case NBT_ID_INT_ARR:
-			return "Int Array";
-		break;
-		case NBT_ID_LIST:
-			return "List";
-		break;
-		case NBT_ID_LONG:
-			return "Long";
-		break;
-		case NBT_ID_LONG_ARR:
-			return "Long Array";
-		break;
-		case NBT_ID_SHORT:
-			return "Short";
-		break;
-		case NBT_ID_STRING:
-			return "String";
-		break;
-	}
-	return "Invalid";
+	return nbt_friendly_type(type);
 }
 
 void nbttag::add_child(nbttag* child){
@@ -148,4 +107,49 @@ ostream& operator<<(ostream& os, const nbttag &it){
 			os << *i << "\n\t";
 	}
 	return os;
+}
+
+std::string nbt_friendly_type(char type){
+	switch(type){
+		case NBT_ID_BYTE:
+			return "Byte";
+		break;
+		case NBT_ID_BYTE_ARR:
+			return "Byte Array";
+		break;
+		case NBT_ID_COMPOUND:
+			return "Compound";
+		break;
+		case NBT_ID_DOUBLE:
+			return "Double";
+		break;
+		case NBT_ID_END:
+			return "END";
+		break;
+		case NBT_ID_FLOAT:
+			return "Float";
+		break;
+		case NBT_ID_INT:
+			return "Int";
+		break;
+		case NBT_ID_INT_ARR:
+			return "Int Array";
+		break;
+		case NBT_ID_LIST:
+			return "List";
+		break;
+		case NBT_ID_LONG:
+			return "Long";
+		break;
+		case NBT_ID_LONG_ARR:
+			return "Long Array";
+		break;
+		case NBT_ID_SHORT:
+			return "Short";
+		break;
+		case NBT_ID_STRING:
+			return "String";
+		break;
+	}
+	return "Invalid";
 }
