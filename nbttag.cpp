@@ -80,12 +80,47 @@ nbttag* nbttag::get_last_child(){
 	return contents.back();
 }
 
+string nbttag::payload_str(){
+	if(!payload_exists)
+		return "No Payload";
+	switch(type){
+		case NBT_ID_BYTE:
+			return to_string(*(get_if<signed char>(&payload)));
+		break;
+		case NBT_ID_BYTE_ARR:
+		break;
+		case NBT_ID_DOUBLE:
+			return to_string(*(get_if<double>(&payload)));
+		break;
+		case NBT_ID_FLOAT:
+			return to_string(*(get_if<float>(&payload)));
+		break;
+		case NBT_ID_INT:
+			return to_string(*(get_if<int>(&payload)));
+		break;
+		case NBT_ID_INT_ARR:
+		break;
+		case NBT_ID_LONG:
+			return to_string(*(get_if<long>(&payload)));
+		break;
+		case NBT_ID_LONG_ARR:
+		break;
+		case NBT_ID_SHORT:
+			return to_string(*(get_if<short>(&payload)));
+		break;
+		case NBT_ID_STRING:
+			return *(get_if<string>(&payload));
+		break;
+	}
+	return "Invalid type";
+}
+
 ostream& operator<<(ostream& os, nbttag it){
 	os << "Tag type " << it.friendly_type();
 	if(it.named)
 		os << ", \"" << it.name << "\"";
 	if(it.payload_exists)
-		os << "\n" << *static_cast<string*>(get_if<string>(&it.payload));
+		os << "\n" << it.payload_str();
 	if(it.contents.size() > 0){
 		os << "\nChildren: \n\t";
 		for (auto i : it.contents)

@@ -79,7 +79,8 @@ int parse(ifstream &nbtfilein){
 				cout << buf << endl;
 				parents.back()->add_child(new nbttag(NBT_ID_BYTE, static_cast<string>(buf.get())));
 				readbuf(1);
-				cout << static_cast<unsigned char>(buf[0]) << endl;
+				parents.back()->get_last_child()->init_payload(*reinterpret_cast<signed char*>(buf.get()));
+				cout << to_string(*reinterpret_cast<signed char*>(buf.get())) << endl;
 			break;
 			case NBT_ID_INT:
 				cout << "Int: ";
@@ -87,7 +88,9 @@ int parse(ifstream &nbtfilein){
 				cout << buf << endl;
 				parents.back()->add_child(new nbttag(NBT_ID_INT, static_cast<string>(buf.get())));
 				readbuf(4);
-				cout << htobe32(*reinterpret_cast<int*>(buf.get())) << endl;
+				{unsigned int tempout = htobe32(*reinterpret_cast<unsigned int*>(buf.get()));
+				parents.back()->get_last_child()->init_payload(*reinterpret_cast<int*>(&tempout));
+				cout << *reinterpret_cast<int*>(&tempout) << endl;}
 			break;
 			case NBT_ID_LONG:
 				cout << "Long: ";
@@ -95,7 +98,9 @@ int parse(ifstream &nbtfilein){
 				cout << buf << endl;
 				parents.back()->add_child(new nbttag(NBT_ID_LONG, static_cast<string>(buf.get())));
 				readbuf(8);
-				cout << htobe64(*reinterpret_cast<long*>(buf.get())) << endl;
+				{unsigned long tempout = htobe64(*reinterpret_cast<unsigned long*>(buf.get()));
+				parents.back()->get_last_child()->init_payload(*reinterpret_cast<long*>(&tempout));
+				cout << *reinterpret_cast<long*>(&tempout) << endl;}
 			break;
 			case NBT_ID_SHORT:
 				cout << "Short: ";
@@ -103,7 +108,9 @@ int parse(ifstream &nbtfilein){
 				cout << buf << endl;
 				parents.back()->add_child(new nbttag(NBT_ID_SHORT, static_cast<string>(buf.get())));
 				readbuf(2);
-				cout << htobe16(*reinterpret_cast<short*>(buf.get())) << endl;
+				{unsigned short tempout = htobe16(*reinterpret_cast<unsigned short*>(buf.get()));
+				parents.back()->get_last_child()->init_payload(*reinterpret_cast<short*>(&tempout));
+				cout << *reinterpret_cast<short*>(&tempout) << endl;}
 			break;
 			case NBT_ID_FLOAT:
 				cout << "Float: ";
@@ -112,6 +119,7 @@ int parse(ifstream &nbtfilein){
 				parents.back()->add_child(new nbttag(NBT_ID_FLOAT, static_cast<string>(buf.get())));
 				readbuf(4);
 				{unsigned int tempout = htobe32(*reinterpret_cast<unsigned int*>(buf.get()));
+				parents.back()->get_last_child()->init_payload(*reinterpret_cast<float*>(&tempout));
 				cout << *reinterpret_cast<float*>(&tempout) << endl;}
 			break;
 			case NBT_ID_DOUBLE:
@@ -121,6 +129,7 @@ int parse(ifstream &nbtfilein){
 				cout << buf << endl;
 				readbuf(8);
 				{unsigned long tempout = htobe64(*reinterpret_cast<unsigned long*>(buf.get()));
+				parents.back()->get_last_child()->init_payload(*reinterpret_cast<double*>(&tempout));
 				cout << *reinterpret_cast<double*>(&tempout) << endl;}
 			break;
 			case NBT_ID_BYTE_ARR:

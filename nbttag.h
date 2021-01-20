@@ -21,7 +21,7 @@ constexpr char NBT_ID_COMPOUND = '\x0a';
 constexpr char NBT_ID_INT_ARR = '\x0b';
 constexpr char NBT_ID_LONG_ARR = '\x0c';
 
-typedef std::variant<signed char, short, int, long, double, std::shared_ptr<signed char>,\
+typedef std::variant<signed char, short, int, long, float, double, std::shared_ptr<signed char>,\
 		std::shared_ptr<int>, std::shared_ptr<long>, std::string> nbt_payload;
 
 class nbttag {
@@ -46,6 +46,7 @@ public:
 		payload_exists = true;
 		payload = payloadi;
 	}
+	std::string payload_str();
 	friend std::ostream& operator<<(std::ostream& os, nbttag it);
 };
 
