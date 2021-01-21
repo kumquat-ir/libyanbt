@@ -21,7 +21,7 @@ using namespace std;
 	buf[res] = '\x00';\
 } }
 
-int parse(ifstream &nbtfilein){
+int parse(ifstream &nbtfilein, nbtfile &nbtdata){
 	nbtfilein.seekg(ios::beg);
 
 	unique_ptr<char[]> buf;
@@ -47,8 +47,6 @@ int parse(ifstream &nbtfilein){
 		break;
 	}
 	parents.push_back(static_cast<unique_ptr<nbttag>>(&root_tag));
-
-	nbtfile nbtdata = nbtfile("default_filename", &root_tag);
 
 	while(true){
 		char type;
@@ -183,7 +181,7 @@ int parse(ifstream &nbtfilein){
 			list_del = false;
 		}
 	}
-	cout << nbtdata << endl;
+	nbtdata.init_root_tag(root_tag);
 
 	return 0;
 }

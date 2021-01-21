@@ -74,7 +74,9 @@ int main(int argc, char** argv){
 	cout << "size: " << fsize << endl;
 	//print_hex(filemem, fsize, 0);
 
-	parse(filein);
+	nbtfile nbtdata = nbtfile("default filename");
+	parse(filein, nbtdata);
+	cout << nbtdata << endl;
 
 	filein.close();
 	return 0;
