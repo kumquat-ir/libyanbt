@@ -47,6 +47,7 @@ int main(int argc, char** argv){
 	string ifname = argv[1];
 	unique_ptr<char[]> filemem;
 	int fsize;
+	char compression = NBT_COMPRESS_NONE;
 	int cgz = checkgz(ifname);
 	if(cgz == -1){
 		return 1;
@@ -60,6 +61,7 @@ int main(int argc, char** argv){
 		io::copy(gzfile, tmpfile);
 		io::close(gzfile);
 		ifname = nifname;
+		compression = NBT_COMPRESS_GZIP;
 	}
 	ifstream filein (ifname, ios::binary | ios::ate);
 	if(!filein.good() || !filein.is_open()){
@@ -76,12 +78,11 @@ int main(int argc, char** argv){
 	//print_hex(filemem, fsize, 0);
 
 	nbtfile nbtdata = nbtfile("default filename");
+	nbtdata.compress_type = compression;
 	parse(filein, nbtdata);
 	cout << nbtdata << endl;
 
-	ofstream outfile(filesystem::temp_directory_path() / "yanbt_out.nbt", ios::out | ios::binary);
-	nbtdata.write_file(outfile);
-	outfile.close();
+	nbtdata.write_file(filesystem::temp_directory_path() / "yanbt_out.nbt");
 
 	filein.close();
 	return 0;
