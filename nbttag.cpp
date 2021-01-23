@@ -112,6 +112,88 @@ ostream& operator<<(ostream& os, const nbttag &it){
 	return os;
 }
 
+void nbttag::write_data(ofstream& os){
+	if(named){
+		os.put(type);
+		unsigned short tmp = htobe16(static_cast<unsigned short>(name.length()));
+		os.write(reinterpret_cast<char*>(&tmp), 2);
+		for (char i : name)
+			os.put(i);
+	}
+	if(payload_exists){
+		switch(type){
+			case NBT_ID_BYTE:
+				os.put(*get_if<signed char>(&payload));
+			break;
+			case NBT_ID_BYTE_ARR:{
+				unsigned int tmp = htobe32(static_cast<unsigned int>((*get_if<vector<signed char>>(&payload)).size()));
+				os.write(reinterpret_cast<char*>(&tmp), 4);
+				for(signed char i : *(get_if<vector<signed char>>(&payload)))
+					os.put(i);
+			}break;
+			case NBT_ID_DOUBLE:{
+				unsigned long tmp = htobe64(*reinterpret_cast<unsigned long*>(get_if<double>(&payload)));
+				os.write(reinterpret_cast<char*>(&tmp), 8);
+			}break;
+			case NBT_ID_FLOAT:{
+				unsigned int tmp = htobe32(*reinterpret_cast<unsigned int*>(get_if<float>(&payload)));
+				os.write(reinterpret_cast<char*>(&tmp), 4);
+			}break;
+			case NBT_ID_INT:{
+				unsigned int tmp = htobe32(*reinterpret_cast<unsigned int*>(get_if<int>(&payload)));
+				os.write(reinterpret_cast<char*>(&tmp), 4);
+			}break;
+			case NBT_ID_INT_ARR:{
+				unsigned int tmp = htobe32(static_cast<unsigned int>((*get_if<vector<signed char>>(&payload)).size()));
+				os.write(reinterpret_cast<char*>(&tmp), 4);
+				for(signed int i : *(get_if<vector<signed int>>(&payload))){
+					unsigned int tmp = htobe32(*reinterpret_cast<unsigned int*>(&i));
+					os.write(reinterpret_cast<char*>(&tmp), 4);
+				}
+			}break;
+			case NBT_ID_LONG:{
+				unsigned long tmp = htobe64(*reinterpret_cast<unsigned long*>(get_if<long>(&payload)));
+				os.write(reinterpret_cast<char*>(&tmp), 8);
+			}break;
+			case NBT_ID_LONG_ARR:{
+				unsigned int tmp = htobe32(static_cast<unsigned int>((*get_if<vector<signed char>>(&payload)).size()));
+				os.write(reinterpret_cast<char*>(&tmp), 4);
+				for(long i : *(get_if<vector<long>>(&payload))){
+					unsigned long tmp = htobe64(*reinterpret_cast<unsigned long*>(&i));
+					os.write(reinterpret_cast<char*>(&tmp), 8);
+				}
+			}break;
+			case NBT_ID_SHORT:{
+				unsigned short tmp = htobe16(*reinterpret_cast<unsigned short*>(get_if<short>(&payload)));
+				os.write(reinterpret_cast<char*>(&tmp), 2);
+			}break;
+			case NBT_ID_STRING:{
+				string tmpstr = *get_if<string>(&payload);
+				unsigned short tmp = htobe16(static_cast<unsigned short>(tmpstr.length()));
+				os.write(reinterpret_cast<char*>(&tmp), 2);
+				for (char i : tmpstr)
+					os.put(i);
+			}break;
+		}
+	}
+	if(type == NBT_ID_LIST || type == NBT_ID_COMPOUND){
+		if(type == NBT_ID_LIST){
+			if(length > 0)
+				os.put(contents[0]->type);
+			else
+				os.put('\x00');
+			unsigned int tmp = htobe32(*reinterpret_cast<unsigned int*>(&length));
+			os.write(reinterpret_cast<char*>(&tmp), 4);
+		}
+		for(nbttag* i : contents){
+			i->write_data(os);
+		}
+		if(type == NBT_ID_COMPOUND){
+			os.put('\x00'); //ending TAG_END
+		}
+	}
+}
+
 std::string nbt_friendly_type(char type){
 	switch(type){
 		case NBT_ID_BYTE:

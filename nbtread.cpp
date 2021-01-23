@@ -7,6 +7,7 @@
 #include <fstream>
 #include <filesystem>
 #include <endian.h>
+#include "nbtfile.h"
 #include "nbtparse.h"
 #include "nbtread.h"
 
@@ -52,7 +53,7 @@ int main(int argc, char** argv){
 	} else if (cgz == 1){/* gzip detected */
 		io::filtering_istream gzfile;
 		string nifname = filesystem::temp_directory_path() / "yanbt_tmp";
-		ofstream tmpfile (nifname);
+		ofstream tmpfile (nifname, ios::binary);
 		gzfile.push(io::gzip_decompressor());
 		cout << "decompressing gzip" << endl;
 		gzfile.push(io::file_source(ifname), ios::binary);
@@ -77,6 +78,10 @@ int main(int argc, char** argv){
 	nbtfile nbtdata = nbtfile("default filename");
 	parse(filein, nbtdata);
 	cout << nbtdata << endl;
+
+	ofstream outfile(filesystem::temp_directory_path() / "yanbt_out.nbt", ios::out | ios::binary);
+	nbtdata.write_file(outfile);
+	outfile.close();
 
 	filein.close();
 	return 0;

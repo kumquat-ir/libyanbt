@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
 #include <memory>
 #include <variant>
 
@@ -47,6 +48,7 @@ public:
 		payload = payloadi;
 	}
 	std::string payload_str() const;
+	void write_data(std::ofstream&);
 	friend std::ostream& operator<<(std::ostream& os, const nbttag &it);
 };
 

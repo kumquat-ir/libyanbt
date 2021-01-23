@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <fstream>
 #include "nbtfile.h"
 
 using namespace std;
@@ -20,7 +21,11 @@ void nbtfile::init_root_tag(nbttag rooti){
 	root_tag = rooti;
 }
 
-ostream& operator<<(ostream& os, nbtfile& it){
+void nbtfile::write_file(ofstream& os){
+	root_tag.write_data(os);
+}
+
+ostream& operator<<(ostream& os, const nbtfile& it){
 	os << "NBT file " << it.filename << ":\n";
 	os << it.root_tag;
 	return os;

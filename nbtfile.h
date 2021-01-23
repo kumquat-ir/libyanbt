@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 #include "nbttag.h"
 
 class nbtfile {
@@ -14,7 +15,8 @@ public:
 	nbtfile(std::string);
 	nbtfile(std::string, nbttag);
 	void init_root_tag(nbttag);
-	friend std::ostream& operator<<(std::ostream& os, nbtfile& it);
+	void write_file(std::ofstream&);
+	friend std::ostream& operator<<(std::ostream& os, const nbtfile& it);
 };
 
 #endif /* NBTFILE_H */
