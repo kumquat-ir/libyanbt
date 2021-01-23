@@ -98,6 +98,7 @@ int parse(ifstream &nbtfilein, nbtfile &nbtdata){
 				readbuf(4);
 				/* TODO properly parse as signed int. should be fine for now */
 				list_vars.push_back(pair(type, (htobe32(*reinterpret_cast<int*>(buf.get())))));
+				parents.back()->payload = static_cast<signed char>(type);
 			break;
 			case NBT_ID_STRING:
 				readbuf_str(stringl);

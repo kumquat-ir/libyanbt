@@ -178,10 +178,7 @@ void nbttag::write_data(ofstream& os){
 	}
 	if(type == NBT_ID_LIST || type == NBT_ID_COMPOUND){
 		if(type == NBT_ID_LIST){
-			if(length > 0)
-				os.put(contents[0]->type);
-			else
-				os.put('\x00');
+			os.put(*get_if<signed char>(&payload));
 			unsigned int tmp = htobe32(*reinterpret_cast<unsigned int*>(&length));
 			os.write(reinterpret_cast<char*>(&tmp), 4);
 		}
