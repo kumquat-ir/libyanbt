@@ -144,7 +144,7 @@ void nbttag::write_data(ofstream& os){
 				os.write(reinterpret_cast<char*>(&tmp), 4);
 			}break;
 			case NBT_ID_INT_ARR:{
-				unsigned int tmp = htobe32(static_cast<unsigned int>((*get_if<vector<signed char>>(&payload)).size()));
+				unsigned int tmp = htobe32(static_cast<unsigned int>((*get_if<vector<int>>(&payload)).size()));
 				os.write(reinterpret_cast<char*>(&tmp), 4);
 				for(signed int i : *(get_if<vector<signed int>>(&payload))){
 					unsigned int tmp = htobe32(*reinterpret_cast<unsigned int*>(&i));
@@ -156,7 +156,7 @@ void nbttag::write_data(ofstream& os){
 				os.write(reinterpret_cast<char*>(&tmp), 8);
 			}break;
 			case NBT_ID_LONG_ARR:{
-				unsigned int tmp = htobe32(static_cast<unsigned int>((*get_if<vector<signed char>>(&payload)).size()));
+				unsigned int tmp = htobe32(static_cast<unsigned int>((*get_if<vector<long>>(&payload)).size()));
 				os.write(reinterpret_cast<char*>(&tmp), 4);
 				for(long i : *(get_if<vector<long>>(&payload))){
 					unsigned long tmp = htobe64(*reinterpret_cast<unsigned long*>(&i));
