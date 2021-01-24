@@ -21,6 +21,7 @@ public:
 	nbtfile(std::string, nbttag);
 	void init_root_tag(nbttag);
 	void write_file(std::string);
+	void set_compression(char);
 	friend std::ostream& operator<<(std::ostream& os, const nbtfile& it);
 };
 

@@ -22,10 +22,6 @@ nbttag::nbttag (char typei, string namei){
 	length = 0;
 }
 
-string nbttag::friendly_type() const {
-	return nbt_friendly_type(type);
-}
-
 void nbttag::add_child(nbttag* child){
 	contents.push_back(child);
 	length++;
@@ -95,8 +91,12 @@ string nbttag::payload_str() const {
 	return "Invalid type";
 }
 
+nbt_payload nbttag::get_payload(){
+	return payload;
+}
+
 ostream& operator<<(ostream& os, const nbttag &it){
-	os << "Tag type " << it.friendly_type();
+	os << "Tag type " << nbt_friendly_type(it.type);
 	if(it.named)
 		os << ", \"" << it.name << "\"";
 	if(it.payload_exists)

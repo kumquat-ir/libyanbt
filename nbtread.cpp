@@ -22,21 +22,50 @@ void print_hex(unique_ptr<char[]> &toPrint, int amt, int start){
 	cout << endl << dec;
 }
 
-int checkgz(string ifname){
-	/* use magic number 1f8b to check if file ifname is a gzip */
-	ifstream file (ifname, ios::binary);
-	if(!file.good() || !file.is_open()){ // TODO learn how to throw an error
+char* checkmagic(filesystem::path ifpath){
+	ifstream file (ifpath, ios::binary);
+	if(!file.good() || !file.is_open()){
 		cerr << "file cannot be opened!" << endl;
 		file.close();
-		return -1;
+		throw "File cannot be opened!";
 	}
-	char magic[2];
-	int out = 0;
+	char* magic = new char[2];
 	file.read(magic, 2);
-	if(magic[0]=='\x1f' && magic[1]=='\x8b')
-		out = 1;
 	file.close();
-	return out;
+	return magic;
+}
+
+nbtfile read_nbt(filesystem::path ifpath){
+	char compression = NBT_COMPRESS_NONE;
+	char* magic = checkmagic(ifpath);
+	string ifname = ifpath.filename();
+	if (magic[0] == '\x1f' && magic[1] == '\x8b'){/* gzip detected */
+		io::filtering_istream gzfile;
+		string tmpf_path = filesystem::temp_directory_path() / "yanbt_tmp";
+		ofstream tmpfile (tmpf_path, ios::binary);
+		gzfile.push(io::gzip_decompressor());
+		cout << "decompressing gzip" << endl;
+		gzfile.push(io::file_source(ifpath), ios::binary);
+		io::copy(gzfile, tmpfile);
+		io::close(gzfile);
+		tmpfile.close();
+		ifpath = tmpf_path;
+		compression = NBT_COMPRESS_GZIP;
+	}
+	ifstream filein (ifpath, ios::binary);
+	if(!filein.good() || !filein.is_open()){
+		cerr << "file cannot be opened!" << endl;
+		filein.close();
+		throw "File cannot be opened!";
+	}
+
+	nbtfile nbtdata = nbtfile(ifname);
+	nbtdata.set_compression(compression);
+	parse(filein, nbtdata);
+
+	filein.close();
+
+	return nbtdata;
 }
 
 int main(int argc, char** argv){
@@ -44,46 +73,10 @@ int main(int argc, char** argv){
 		cerr << "no file provided" << endl;
 		return 1;
 	}
-	string ifname = argv[1];
-	unique_ptr<char[]> filemem;
-	int fsize;
-	char compression = NBT_COMPRESS_NONE;
-	int cgz = checkgz(ifname);
-	if(cgz == -1){
-		return 1;
-	} else if (cgz == 1){/* gzip detected */
-		io::filtering_istream gzfile;
-		string nifname = filesystem::temp_directory_path() / "yanbt_tmp";
-		ofstream tmpfile (nifname, ios::binary);
-		gzfile.push(io::gzip_decompressor());
-		cout << "decompressing gzip" << endl;
-		gzfile.push(io::file_source(ifname), ios::binary);
-		io::copy(gzfile, tmpfile);
-		io::close(gzfile);
-		ifname = nifname;
-		compression = NBT_COMPRESS_GZIP;
-	}
-	ifstream filein (ifname, ios::binary | ios::ate);
-	if(!filein.good() || !filein.is_open()){
-		cerr << "file cannot be opened!" << endl;
-		filein.close();
-		return 1;
-	}
-	fsize = filein.tellg();
-	filemem.reset(new char[fsize]);
-	filein.seekg(ios::beg);
-	filein.read(filemem.get(), fsize);
-	
-	cout << "size: " << fsize << endl;
-	//print_hex(filemem, fsize, 0);
 
-	nbtfile nbtdata = nbtfile("default filename");
-	nbtdata.compress_type = compression;
-	parse(filein, nbtdata);
+	nbtfile nbtdata = read_nbt(argv[1]);
 	cout << nbtdata << endl;
-
 	nbtdata.write_file(filesystem::temp_directory_path() / "yanbt_out.nbt");
 
-	filein.close();
 	return 0;
 }

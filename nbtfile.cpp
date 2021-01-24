@@ -46,6 +46,10 @@ void nbtfile::write_file(string ofname){
 	}
 }
 
+void nbtfile::set_compression(char nc){
+	compress_type = nc;
+}
+
 ostream& operator<<(ostream& os, const nbtfile& it){
 	os << "NBT file " << it.filename << ":\n";
 	os << it.root_tag;

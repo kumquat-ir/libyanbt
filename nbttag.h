@@ -5,7 +5,6 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <memory>
 #include <variant>
 
 constexpr char NBT_ID_END = '\x00';
@@ -28,8 +27,8 @@ typedef std::variant<signed char, short, int, long, float, double, std::vector<s
 class nbttag {
 protected:
 	std::vector<nbttag*> contents;
-public:
 	nbt_payload payload;
+public:
 	bool payload_exists = false;
 	char type;
 	bool named;
@@ -38,7 +37,6 @@ public:
 	nbttag();
 	nbttag(char);
 	nbttag(char, std::string);
-	std::string friendly_type() const;
 	void add_child(nbttag*);
 	nbttag* get_child(size_t);
 	nbttag* get_last_child();
@@ -47,6 +45,11 @@ public:
 		payload_exists = true;
 		payload = payloadi;
 	}
+	template < class T >
+	void set_payload(T payloadi){
+		payload = payloadi;
+	}
+	nbt_payload get_payload();
 	std::string payload_str() const;
 	void write_data(std::ofstream&);
 	friend std::ostream& operator<<(std::ostream& os, const nbttag &it);
