@@ -16,3 +16,4 @@ Does not support:
 - Region (.mca/.mcr) files
 - Bedrock nbt files
 - Compiling on non-Linux platforms
+- Some invalid files
