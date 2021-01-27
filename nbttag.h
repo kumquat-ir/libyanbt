@@ -28,6 +28,7 @@ class nbttag {
 protected:
 	std::vector<nbttag*> contents;
 	nbt_payload payload;
+	nbttag* parent = nullptr;
 public:
 	bool payload_exists = false;
 	char type;
@@ -40,6 +41,8 @@ public:
 	void add_child(nbttag*);
 	nbttag* get_child(size_t);
 	nbttag* get_last_child();
+	void set_parent(nbttag*);
+	nbttag* get_parent();
 	template < class T >
 	void init_payload(T payloadi){
 		payload_exists = true;

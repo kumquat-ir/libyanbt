@@ -79,9 +79,11 @@ int parse(ifstream &nbtfilein, nbtfile &nbtdata){
 
 			readbuf_str(stringl);
 			parents.back()->add_child(new nbttag(type, static_cast<string>(buf.get())));
+			parents.back()->get_last_child()->set_parent(parents.back().get());
 		} else {
 			type = list_vars.back().first;
 			parents.back()->add_child(new nbttag(type));
+			parents.back()->get_last_child()->set_parent(parents.back().get());
 			list_vars.back().second--;
 		}
 

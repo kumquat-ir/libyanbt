@@ -35,6 +35,14 @@ nbttag* nbttag::get_last_child(){
 	return contents.back();
 }
 
+void nbttag::set_parent(nbttag* parenti){
+	parent = parenti;
+}
+
+nbttag* nbttag::get_parent(){
+	return parent;
+}
+
 string nbttag::payload_str() const {
 	if(!payload_exists)
 		return "No Payload";
