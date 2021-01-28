@@ -38,6 +38,7 @@ public:
 	nbttag();
 	nbttag(char);
 	nbttag(char, std::string);
+	int length_recurse();
 	void add_child(nbttag*);
 	nbttag* get_child(size_t);
 	nbttag* get_last_child();

@@ -13,6 +13,7 @@ int main(int argc, char** argv){
 
 	nbtfile nbtdata = read_nbt(argv[1]);
 	cout << nbtdata << endl;
+	cout << nbtdata.root_tag.length_recurse() << endl;
 	nbtdata.write_file(filesystem::temp_directory_path() / "yanbt_out.nbt");
 
 	return 0;

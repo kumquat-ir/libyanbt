@@ -43,6 +43,16 @@ nbttag* nbttag::get_parent(){
 	return parent;
 }
 
+int nbttag::length_recurse(){
+	int out = length;
+	if(contents.size() > 0){
+		for(nbttag* i : contents){
+			out+=i->length_recurse();
+		}
+	}
+	return out;
+}
+
 string nbttag::payload_str() const {
 	if(!payload_exists)
 		return "No Payload";
