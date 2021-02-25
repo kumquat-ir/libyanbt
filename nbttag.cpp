@@ -35,6 +35,15 @@ nbttag* nbttag::get_last_child(){
 	return contents.back();
 }
 
+int nbttag::get_child_index(nbttag* child){
+	for(int i = 0; i < contents.size(); i++){
+		if(contents.at(i) == child){
+			return i;
+		}
+	}
+	return -1;
+}
+
 void nbttag::set_parent(nbttag* parenti){
 	parent = parenti;
 }

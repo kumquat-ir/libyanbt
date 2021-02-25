@@ -42,6 +42,7 @@ public:
 	void add_child(nbttag*);
 	nbttag* get_child(size_t);
 	nbttag* get_last_child();
+	int get_child_index(nbttag*);
 	void set_parent(nbttag*);
 	nbttag* get_parent();
 	template < class T >
