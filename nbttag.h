@@ -45,6 +45,7 @@ public:
 	int get_child_index(nbttag*);
 	void set_parent(nbttag*);
 	nbttag* get_parent();
+	void recalculate_parents();
 	template < class T >
 	void init_payload(T payloadi){
 		payload_exists = true;

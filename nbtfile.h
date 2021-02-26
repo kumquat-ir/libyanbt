@@ -22,6 +22,7 @@ public:
 	void init_root_tag(nbttag);
 	void write_file(std::string);
 	void set_compression(char);
+	void recalculate_parents();
 	friend std::ostream& operator<<(std::ostream& os, const nbtfile& it);
 };
 

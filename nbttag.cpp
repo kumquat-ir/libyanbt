@@ -52,6 +52,13 @@ nbttag* nbttag::get_parent(){
 	return parent;
 }
 
+void nbttag::recalculate_parents(){
+	for(nbttag* child : contents){
+		child->set_parent(this);
+		child->recalculate_parents();
+	}
+}
+
 int nbttag::length_recurse(){
 	int out = length;
 	if(contents.size() > 0){
